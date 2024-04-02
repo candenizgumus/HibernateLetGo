@@ -5,6 +5,7 @@ import com.candenizgumus.entities.User;
 import com.candenizgumus.repositories.CategoryRepository;
 import com.candenizgumus.repositories.UserRepository;
 import com.candenizgumus.services.UserService;
+import com.candenizgumus.utility.SessionContext;
 
 import java.util.InputMismatchException;
 import java.util.Optional;
@@ -38,7 +39,8 @@ public class Main
             }
             switch (secim) {
                 case 1:
-                    Optional<User> loggedUser = userService.login();
+                    userService.login();
+                    userService.userMenu(SessionContext.loggedUser);
                     break;
                 case 2:
                     userService.register();

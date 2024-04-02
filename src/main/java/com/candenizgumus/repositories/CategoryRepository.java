@@ -1,6 +1,11 @@
 package com.candenizgumus.repositories;
 
 import com.candenizgumus.entities.Category;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
+
+import java.util.List;
+import java.util.Stack;
 
 public class CategoryRepository extends RepositoryManager<Category,Long>
 {
@@ -8,4 +13,21 @@ public class CategoryRepository extends RepositoryManager<Category,Long>
     {
         super(Category.class);
     }
+
+    public List<String> getAllParentCategories(){
+
+        TypedQuery<String> query = getEntityManager().createQuery(
+                "SELECT DISTINCT(c.parentCategory) FROM Category c ", String.class);
+        return query.getResultList();
+    }
+
+    public List<String> getCategoriesByParentName(String parentName) {
+        TypedQuery<String> query = getEntityManager().createQuery(
+                "SELECT DISTINCT(c.name) FROM Category c WHERE c.parentCategory =:parentName ", String.class);
+        query.setParameter("parentName", parentName);
+
+        return query.getResultList();
+    }
+
+
 }

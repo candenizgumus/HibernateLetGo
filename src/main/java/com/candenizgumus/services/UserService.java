@@ -8,6 +8,7 @@ import com.candenizgumus.repositories.UserRepository;
 import com.candenizgumus.utility.SessionContext;
 
 import java.time.LocalDate;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -17,11 +18,13 @@ import java.util.regex.Pattern;
 public class UserService
 {
     UserRepository userRepository;
+    IlanService ilanService;
     Scanner scanner = new Scanner(System.in);
 
     public UserService()
     {
         this.userRepository = new UserRepository();
+        this.ilanService = new IlanService();
     }
 
     public Optional<User> login()
@@ -37,6 +40,7 @@ public class UserService
         {
             if (kullaniciAdiListesi.getFirst().getPassword().equals(sifre))
             {
+                SessionContext.loggedUser = (kullaniciAdiListesi.getFirst());
                 return Optional.ofNullable(kullaniciAdiListesi.getFirst());
             }else
             {
@@ -103,7 +107,7 @@ public class UserService
         String konum = scanner.nextLine();
         User loggedUser = User.builder().username(kullaniciadi).password(sifre).email(email).tel(telefon).profileimageurl(profileImage).konum(konum).createat(LocalDate.now()).status(Status.ACTIVE).build();
         userRepository.save(loggedUser);
-        SessionContext.loggedUser = loggedUser;
+
         return true;
 
 
@@ -112,5 +116,29 @@ public class UserService
     private  boolean isValidEmail(String email) {
         Matcher matcher = Constants.EMAIL_PATTERN.matcher(email);
         return matcher.matches();
+    }
+
+    public void userMenu(User loggedUser){
+        while (true) {
+            System.out.println("1- Ilan ver");
+
+            System.out.println("0- Üst Menü");
+            Integer secim;
+            try {
+                System.out.println("seçim giriniz");
+                secim = scanner.nextInt();
+            }catch (InputMismatchException e){
+                throw new RuntimeException("boş giremezsiniz");
+            }
+            switch (secim) {
+                case 1:
+                    ilanService.ilanVer();
+                    break;
+
+                case 0:
+                    return;
+
+            }
+        }
     }
 }
