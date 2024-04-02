@@ -5,6 +5,7 @@ import com.candenizgumus.entities.User;
 import com.candenizgumus.entities.enums.Status;
 import com.candenizgumus.repositories.MessageRepository;
 import com.candenizgumus.repositories.UserRepository;
+import com.candenizgumus.utility.SessionContext;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -100,8 +101,9 @@ public class UserService
         String profileImage = scanner.nextLine();
         System.out.println("Konum Giriniz.");
         String konum = scanner.nextLine();
-
-        userRepository.save(User.builder().username(kullaniciadi).password(sifre).email(email).tel(telefon).profileimageurl(profileImage).konum(konum).createat(LocalDate.now()).status(Status.ACTIVE).build());
+        User loggedUser = User.builder().username(kullaniciadi).password(sifre).email(email).tel(telefon).profileimageurl(profileImage).konum(konum).createat(LocalDate.now()).status(Status.ACTIVE).build();
+        userRepository.save(loggedUser);
+        SessionContext.loggedUser = loggedUser;
         return true;
 
 
