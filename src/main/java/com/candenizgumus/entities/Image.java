@@ -21,7 +21,7 @@ public class Image
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne
-    Ilan ilan_id;
+    Ilan ilan;
     String imageurl;
     @Temporal(TemporalType.DATE)
     LocalDate createat;

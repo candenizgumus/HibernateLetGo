@@ -21,9 +21,9 @@ public class Ilan
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne
-    User user_id;
+    User user;
     @ManyToOne
-    Category category_id;
+    Category category;
     String title;
     String description;
     String konum;

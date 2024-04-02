@@ -18,6 +18,6 @@ public class Category
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     String name;
-    String parentcaregory;
+    String parentCategory;
 
 }

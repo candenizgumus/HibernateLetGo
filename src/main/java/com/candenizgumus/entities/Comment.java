@@ -21,9 +21,9 @@ public class Comment
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne
-    User user_id;
+    User user;
     @ManyToOne
-    User commenter_id;
+    User commenter;
     String text;
     @Temporal(TemporalType.DATE)
     LocalDate comment_date;

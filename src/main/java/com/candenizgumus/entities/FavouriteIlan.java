@@ -21,9 +21,9 @@ public class FavouriteIlan
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne
-    User user_id;
+    User user;
     @ManyToOne
-    Ilan ilan_id;
+    Ilan ilan;
     @Temporal(TemporalType.DATE)
     LocalDate createat;
     @Enumerated(EnumType.STRING)

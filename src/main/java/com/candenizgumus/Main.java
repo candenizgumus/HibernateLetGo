@@ -1,6 +1,8 @@
 package com.candenizgumus;
 
+import com.candenizgumus.entities.Category;
 import com.candenizgumus.entities.User;
+import com.candenizgumus.repositories.CategoryRepository;
 import com.candenizgumus.repositories.UserRepository;
 import com.candenizgumus.services.UserService;
 
@@ -16,6 +18,9 @@ public class Main
     {
 
         menu();
+
+
+
     }
 
     public static void menu(){
@@ -37,6 +42,9 @@ public class Main
                     break;
                 case 2:
                     userService.register();
+                    break;
+                case 0:
+                    System.exit(0);
                     break;
             }
         }

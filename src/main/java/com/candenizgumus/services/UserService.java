@@ -1,5 +1,6 @@
 package com.candenizgumus.services;
 
+import com.candenizgumus.constants.Constants;
 import com.candenizgumus.entities.User;
 import com.candenizgumus.entities.enums.Status;
 import com.candenizgumus.repositories.MessageRepository;
@@ -9,6 +10,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class UserService
 {
@@ -76,7 +79,12 @@ public class UserService
             System.out.println("Email Giriniz.");
             email = scanner.nextLine();
             List<User> emailList = userRepository.findByColumnAndValue("email", email);
-            if (!emailList.isEmpty())
+            if (!isValidEmail(email))
+            {
+                System.out.println("Email format hatasi");
+
+            }
+            else if (!emailList.isEmpty())
             {
                 System.out.println("Email daha once alinmistir.");
 
@@ -97,5 +105,10 @@ public class UserService
         return true;
 
 
+    }
+
+    private  boolean isValidEmail(String email) {
+        Matcher matcher = Constants.EMAIL_PATTERN.matcher(email);
+        return matcher.matches();
     }
 }

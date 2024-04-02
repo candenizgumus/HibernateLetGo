@@ -21,9 +21,9 @@ public class Message
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     @ManyToOne
-    User sender_id;
+    User sender;
     @ManyToOne
-    User receiver_id;
+    User receiver;
     String text;
     @Temporal(TemporalType.DATE)
     LocalDate send_date;
