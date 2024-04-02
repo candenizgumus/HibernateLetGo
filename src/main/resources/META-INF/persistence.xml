@@ -5,17 +5,20 @@
 
     <persistence-unit name="pu_hibernate">
 
-        <class></class>
-
-
-
+        <class>com.candenizgumus.entities.Category</class>
+        <class>com.candenizgumus.entities.Comment</class>
+        <class>com.candenizgumus.entities.FavouriteIlan</class>
+        <class>com.candenizgumus.entities.Ilan</class>
+        <class>com.candenizgumus.entities.Image</class>
+        <class>com.candenizgumus.entities.Message</class>
+        <class>com.candenizgumus.entities.User</class>
 
 
 
         <properties>
             <!-- Database connection settings -->
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/HbManyToManyRelation"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/HBLetGoDB"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres" />
             <property name="jakarta.persistence.jdbc.password" value="1234" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgresPlusDialect"/>
