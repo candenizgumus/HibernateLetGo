@@ -23,6 +23,7 @@ public class UserService
     IlanService ilanService;
     FavouriteIlanService favouriteIlanService;
     MessageService messageService;
+    CategoryService categoryService;
     Scanner scanner = new Scanner(System.in);
 
     public UserService()
@@ -31,6 +32,7 @@ public class UserService
         this.ilanService = new IlanService();
         this.favouriteIlanService = new FavouriteIlanService();
         this.messageService = new MessageService();
+        this.categoryService = new CategoryService();
     }
 
     public Optional<User> login()
@@ -127,6 +129,7 @@ public class UserService
         return matcher.matches();
     }
 
+
     public void userMenu()
     {
         while (true)
@@ -136,6 +139,8 @@ public class UserService
             System.out.println("3- Ilanları Detayli Listele");
             System.out.println("4- Favori İlan Seçme");
             System.out.println("5- Mesajları Goruntule");
+            System.out.println("6- Kategoriye göre arama");
+            System.out.println("7- Konuma göre arama");
             System.out.println("0- Üst Menü");
             Integer secim;
             try
@@ -163,12 +168,38 @@ public class UserService
                 case 5:
                     messageService.mesajlarimiGoruntule();
                     break;
+                case 6:
+                    searchByCategory();
+                    break;
+                case 7:
+                    searchByLocation();
+                    break;
                 case 0:
                     return;
 
             }
         }
     }
+
+    public void searchByCategory(){
+        categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
+        System.out.println("Bir parent kategory giriniz.");
+        String secilenParentCategory = scanner.nextLine();
+        categoryService.categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
+        System.out.println("Bir child kategori seciniz.");
+        String childCategory = scanner.nextLine();
+        ilanService.ilanlariGosterDetaysizKategoriyeGore(secilenParentCategory,childCategory);
+    }
+
+    public void searchByLocation(){
+
+
+        System.out.println("Bir konum seciniz.");
+        String konum = scanner.nextLine();
+        ilanService.ilanlariGosterDetaysizKonumaGore(konum);
+    }
+
+
 
 
 }
