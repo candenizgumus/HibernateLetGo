@@ -1,6 +1,8 @@
 package com.candenizgumus.services;
 
 import com.candenizgumus.constants.Constants;
+import com.candenizgumus.entities.FavouriteIlan;
+import com.candenizgumus.entities.Ilan;
 import com.candenizgumus.entities.User;
 import com.candenizgumus.entities.enums.Status;
 import com.candenizgumus.repositories.MessageRepository;
@@ -19,12 +21,14 @@ public class UserService
 {
     UserRepository userRepository;
     IlanService ilanService;
+    FavouriteIlanService favouriteIlanService;
     Scanner scanner = new Scanner(System.in);
 
     public UserService()
     {
         this.userRepository = new UserRepository();
         this.ilanService = new IlanService();
+        this.favouriteIlanService = new FavouriteIlanService();
     }
 
     public Optional<User> login() //LOGINI DUZELT
@@ -42,7 +46,7 @@ public class UserService
             {
                 SessionContext.loggedUser = (kullaniciAdiListesi.getFirst());
                 return Optional.ofNullable(kullaniciAdiListesi.getFirst());
-            }else
+            } else
             {
                 System.out.println("Kullanici adi veya sifre hatali.");
                 return Optional.empty();
@@ -58,7 +62,7 @@ public class UserService
     {
 
         String kullaniciadi;
-        while(true)
+        while (true)
         {
             System.out.println("Kullanıcı adı giriniz.");
             kullaniciadi = scanner.nextLine();
@@ -68,7 +72,7 @@ public class UserService
             {
                 System.out.println("Kullanici adi daha once alinmistir.");
 
-            }else
+            } else
             {
                 break;
             }
@@ -79,7 +83,7 @@ public class UserService
         String sifre = scanner.nextLine();
 
         String email;
-        while(true)
+        while (true)
         {
             System.out.println("Email Giriniz.");
             email = scanner.nextLine();
@@ -88,12 +92,11 @@ public class UserService
             {
                 System.out.println("Email format hatasi");
 
-            }
-            else if (!emailList.isEmpty())
+            } else if (!emailList.isEmpty())
             {
                 System.out.println("Email daha once alinmistir.");
 
-            }else
+            } else
             {
                 break;
             }
@@ -113,32 +116,45 @@ public class UserService
 
     }
 
-    private  boolean isValidEmail(String email) {
+    private boolean isValidEmail(String email)
+    {
         Matcher matcher = Constants.EMAIL_PATTERN.matcher(email);
         return matcher.matches();
     }
 
-    public void userMenu(){
-        while (true) {
+    public void userMenu()
+    {
+        while (true)
+        {
             System.out.println("1- Ilan ver");
-            System.out.println("2- Ilanları listele");
+            System.out.println("2- Ilanları Detaysiz Listele");
+            System.out.println("3- Ilanları Detayli Listele");
+            System.out.println("4- Favori İlan Seçme");
 
             System.out.println("0- Üst Menü");
             Integer secim;
-            try {
+            try
+            {
                 System.out.println("seçim giriniz");
                 secim = scanner.nextInt();
-            }catch (InputMismatchException e){
+            } catch (InputMismatchException e)
+            {
                 throw new RuntimeException("boş giremezsiniz");
             }
-            switch (secim) {
+            switch (secim)
+            {
                 case 1:
                     ilanService.ilanVer();
                     break;
                 case 2:
-                    ilanService.ilanlariListele();
+                    ilanService.ilanlariGosterDetaysiz();
                     break;
-
+                case 3:
+                    ilanService.ilanlariListeleDetayli();
+                    break;
+                case 4:
+                    ilanService.favoriIlanSecme();
+                    break;
                 case 0:
                     return;
 
@@ -146,9 +162,5 @@ public class UserService
         }
     }
 
-    public void favoriIlanSecme(){
-        System.out.println("Favori ilanınızın id'sini giriniz.");
-        String ilanId = scanner.nextLine();
-        ilanService.ilanRepository.findById()
-    }
+
 }

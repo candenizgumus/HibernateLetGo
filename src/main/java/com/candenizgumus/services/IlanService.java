@@ -1,6 +1,7 @@
 package com.candenizgumus.services;
 
 import com.candenizgumus.entities.Category;
+import com.candenizgumus.entities.FavouriteIlan;
 import com.candenizgumus.entities.Ilan;
 import com.candenizgumus.entities.Image;
 import com.candenizgumus.entities.enums.Status;
@@ -10,6 +11,7 @@ import com.candenizgumus.utility.SessionContext;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class IlanService
@@ -17,6 +19,7 @@ public class IlanService
     IlanRepository ilanRepository;
     CategoryService categoryService;
     ImageService imageService;
+    FavouriteIlanService favouriteIlanService;
 
     Scanner scanner = new Scanner(System.in);
 
@@ -25,10 +28,12 @@ public class IlanService
         this.ilanRepository = new IlanRepository();
         this.categoryService = new CategoryService();
         this.imageService = new ImageService();
+        this.favouriteIlanService = new FavouriteIlanService();
 
     }
 
-    public void ilanVer(){
+    public void ilanVer()
+    {
         System.out.println("Kategori Seçiniz");
         categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
         System.out.println("Bir parent kategory giriniz.");
@@ -43,11 +48,8 @@ public class IlanService
         System.out.println("Konum giriniz.");
         String konum = scanner.nextLine();
         System.out.println("Fiyat giriniz.");
-        Double fiyat = scanner.nextDouble(); scanner.nextLine();
-
-
-
-
+        Double fiyat = scanner.nextDouble();
+        scanner.nextLine();
 
 
         List<Category> category = categoryService.categoryRepository.findByColumnAndValue("name", altKategori);
@@ -58,12 +60,49 @@ public class IlanService
 
     }
 
-
-    public void ilanlariListele(){
+    public void ilanlariGosterDetaysiz()
+    {
         List<Ilan> butunIlanlar = ilanRepository.findAll();
-        butunIlanlar.forEach(ilan -> {
+        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        butunIlanlar.forEach(ilan ->
+        {
             System.out.println("************************************************************************************************************************************");
-            System.out.println("Ilan No: "+ ilan.getId());
+            System.out.println("Ilan No: " + ilan.getId());
+            System.out.println("Username: " + ilan.getUser().getUsername());
+            System.out.println("Baslik: " + ilan.getTitle());
+            System.out.println("Fiyat " + ilan.getPrice());
+            List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
+            if (!fotos.isEmpty())
+            {
+                System.out.println(fotos.getFirst().getImageurl());
+            }
+
+            favouriteIlan.forEach(f ->
+            {
+                if (f.getIlan().equals(ilan))
+                {
+                    System.out.println("Bu ilan FAVORİNİZDEDİR!.");
+
+                }
+            });
+        });
+
+        System.out.println("************************************************************************************************************************************");
+
+    }
+
+
+    public void ilanlariListeleDetayli()
+    {
+        System.out.println("Detayli Gormek istediğiniz ilanın id'sini giriniz.");
+        Long ilanId = scanner.nextLong();
+        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        Optional<Ilan> ilanOptional = ilanRepository.findById(ilanId);
+        if (ilanOptional.isPresent())
+        {
+            Ilan ilan = ilanOptional.get();
+            System.out.println("************************************************************************************************************************************");
+            System.out.println("Ilan No: " + ilan.getId());
             System.out.println("Username: " + ilan.getUser().getUsername());
             System.out.println("Tarih: " + ilan.getCreateat());
             System.out.println("Baslik: " + ilan.getTitle());
@@ -71,10 +110,66 @@ public class IlanService
             System.out.println("Adres: " + ilan.getKonum());
             System.out.println("Fiyat " + ilan.getPrice());
             List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
-            fotos.forEach(f-> System.out.println(f.getImageurl()));
+            fotos.forEach(f -> System.out.println(f.getImageurl()));
 
-        });
+            favouriteIlan.forEach(f ->
+            {
+                if (f.getIlan().equals(ilan))
+                {
+                    System.out.println("Bu ilan FAVORİNİZDEDİR!.");
 
+                }
+            });
+            ilanIslemleri(ilanOptional.get());
+        }
         System.out.println("************************************************************************************************************************************");
+
+
+
     }
+
+    public void ilanIslemleri(Ilan ilan){
+
+        while(true)
+        {
+            System.out.println("1- Ilanı Favoriden Çıkar");
+            System.out.println("2- Mesaj at");
+            System.out.println("3- Ust Menu");
+            int secim = scanner.nextInt(); scanner.nextLine();
+            switch (secim)
+            {   case 1:
+                favoriIlanCikarma(ilan);
+                break;
+                case 3:
+                    return;
+            }
+        }
+
+    }
+
+    public void favoriIlanSecme()
+    {
+
+        System.out.println("Favori ilanınızın id'sini giriniz.");
+        Long ilanId = scanner.nextLong();
+        Optional<Ilan> favoriIlan = ilanRepository.findById(ilanId);
+        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        if (favoriIlan.isPresent() && !(favouriteIlan.getFirst().getIlan().equals(favoriIlan.get())))
+        {
+            favouriteIlanService.favouriteIlanRepository.save(FavouriteIlan.builder().user(SessionContext.loggedUser).ilan(favoriIlan.get()).createat(LocalDate.now()).status(Status.ACTIVE).build());
+        } else
+        {
+            System.out.println("Girilen no'da ilan yoktu veya Bu ilan zaten favorinizdedir.");
+        }
+
+    }
+
+    public void favoriIlanCikarma(Ilan ilan)
+    {
+        List<FavouriteIlan> favoriIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("ilan", ilan);
+        favouriteIlanService.favouriteIlanRepository.deleteById(favoriIlan.getFirst().getId());
+    }
+
+
 }
+
