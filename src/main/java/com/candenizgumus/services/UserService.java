@@ -20,19 +20,13 @@ import java.util.regex.Pattern;
 public class UserService
 {
     UserRepository userRepository;
-    IlanService ilanService;
-    FavouriteIlanService favouriteIlanService;
-    MessageService messageService;
-    CategoryService categoryService;
+
     Scanner scanner = new Scanner(System.in);
 
     public UserService()
     {
         this.userRepository = new UserRepository();
-        this.ilanService = new IlanService();
-        this.favouriteIlanService = new FavouriteIlanService();
-        this.messageService = new MessageService();
-        this.categoryService = new CategoryService();
+
     }
 
     public Optional<User> login()
@@ -154,19 +148,19 @@ public class UserService
             switch (secim)
             {
                 case 1:
-                    ilanService.ilanVer();
+                    LetGoServices.ilanService.ilanVer();
                     break;
                 case 2:
-                    ilanService.ilanlariGosterDetaysiz();
+                    LetGoServices.ilanService.ilanlariGosterDetaysiz();
                     break;
                 case 3:
-                    ilanService.ilanlariListeleDetayli();
+                    LetGoServices.ilanService.ilanlariListeleDetayli();
                     break;
                 case 4:
-                    ilanService.favoriIlanSecme();
+                    LetGoServices.ilanService.favoriIlanSecme();
                     break;
                 case 5:
-                    messageService.mesajlarimiGoruntule();
+                    LetGoServices.messageService.mesajlarimiGoruntule();
                     break;
                 case 6:
                     searchByCategory();
@@ -182,13 +176,13 @@ public class UserService
     }
 
     public void searchByCategory(){
-        categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
+        LetGoServices.categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
         System.out.println("Bir parent kategory giriniz.");
         String secilenParentCategory = scanner.nextLine();
-        categoryService.categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
+        LetGoServices.categoryService.categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
         System.out.println("Bir child kategori seciniz.");
         String childCategory = scanner.nextLine();
-        ilanService.ilanlariGosterDetaysizKategoriyeGore(secilenParentCategory,childCategory);
+        LetGoServices.ilanService.ilanlariGosterDetaysizKategoriyeGore(secilenParentCategory,childCategory);
     }
 
     public void searchByLocation(){
@@ -196,7 +190,7 @@ public class UserService
 
         System.out.println("Bir konum seciniz.");
         String konum = scanner.nextLine();
-        ilanService.ilanlariGosterDetaysizKonumaGore(konum);
+        LetGoServices.ilanService.ilanlariGosterDetaysizKonumaGore(konum);
     }
 
 

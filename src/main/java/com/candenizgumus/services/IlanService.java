@@ -16,30 +16,24 @@ import java.util.Scanner;
 public class IlanService
 {
     IlanRepository ilanRepository;
-    CategoryService categoryService;
-    ImageService imageService;
-    FavouriteIlanService favouriteIlanService;
-    MessageService messageService;
+
 
     Scanner scanner = new Scanner(System.in);
 
     public IlanService()
     {
         this.ilanRepository = new IlanRepository();
-        this.categoryService = new CategoryService();
-        this.imageService = new ImageService();
-        this.favouriteIlanService = new FavouriteIlanService();
-        this.messageService = new MessageService();
+
 
     }
 
     public void ilanVer()
     {
         System.out.println("Kategori Seçiniz");
-        categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
+        LetGoServices.categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
         System.out.println("Bir parent kategory giriniz.");
         String secilenParentCategory = scanner.nextLine();
-        categoryService.categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
+        LetGoServices.categoryService.categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
         System.out.println("Alt kategorinizi giriniz.");
         String altKategori = scanner.nextLine();
         System.out.println("Başlık giriniz.");
@@ -53,18 +47,18 @@ public class IlanService
         scanner.nextLine();
 
 
-        List<Category> category = categoryService.categoryRepository.findByColumnAndValue("name", altKategori);
+        List<Category> category = LetGoServices.categoryService.categoryRepository.findByColumnAndValue("name", altKategori);
         Ilan ilan = ilanRepository.save(Ilan.builder().user(SessionContext.loggedUser).category(category.getFirst()).title(baslik).description(description).konum(konum).price(fiyat).createat(LocalDate.now()).status(Status.ACTIVE).build());
 
-        List<String> fotoURLS = imageService.fotografAl0YazanaKadar();
-        fotoURLS.forEach(f -> imageService.imageRepository.save(Image.builder().createat(LocalDate.now()).status(Status.ACTIVE).ilan(ilan).imageurl(f).build()));
+        List<String> fotoURLS = LetGoServices.imageService.fotografAl0YazanaKadar();
+        fotoURLS.forEach(f -> LetGoServices.imageService.imageRepository.save(Image.builder().createat(LocalDate.now()).status(Status.ACTIVE).ilan(ilan).imageurl(f).build()));
 
     }
 
     public void ilanlariGosterDetaysiz()
     {
         List<Ilan> butunIlanlar = ilanRepository.findAll();
-        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        List<FavouriteIlan> favouriteIlan = LetGoServices.favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
         butunIlanlar.forEach(ilan ->
         {
             System.out.println("************************************************************************************************************************************");
@@ -72,7 +66,7 @@ public class IlanService
             System.out.println("Username: " + ilan.getUser().getUsername());
             System.out.println("Baslik: " + ilan.getTitle());
             System.out.println("Fiyat " + ilan.getPrice());
-            List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
+            List<Image> fotos = LetGoServices.imageService.imageRepository.findByColumnAndValue("ilan", ilan);
             if (!fotos.isEmpty())
             {
                 System.out.println(fotos.getFirst().getImageurl());
@@ -95,7 +89,7 @@ public class IlanService
     public void ilanlariGosterDetaysizKategoriyeGore(String parentName, String childName)
     {
         List<Ilan> butunIlanlar = ilanRepository.getIlansByCategory(parentName,childName);
-        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        List<FavouriteIlan> favouriteIlan = LetGoServices.favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
         butunIlanlar.forEach(ilan ->
         {
             System.out.println("************************************************************************************************************************************");
@@ -103,7 +97,7 @@ public class IlanService
             System.out.println("Username: " + ilan.getUser().getUsername());
             System.out.println("Baslik: " + ilan.getTitle());
             System.out.println("Fiyat " + ilan.getPrice());
-            List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
+            List<Image> fotos = LetGoServices.imageService.imageRepository.findByColumnAndValue("ilan", ilan);
             if (!fotos.isEmpty())
             {
                 System.out.println(fotos.getFirst().getImageurl());
@@ -126,7 +120,7 @@ public class IlanService
     public void ilanlariGosterDetaysizKonumaGore(String konum)
     {
         List<Ilan> butunIlanlar = ilanRepository.getIlansByLocation(konum);
-        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        List<FavouriteIlan> favouriteIlan = LetGoServices.favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
         butunIlanlar.forEach(ilan ->
         {
             System.out.println("************************************************************************************************************************************");
@@ -134,7 +128,7 @@ public class IlanService
             System.out.println("Username: " + ilan.getUser().getUsername());
             System.out.println("Baslik: " + ilan.getTitle());
             System.out.println("Fiyat " + ilan.getPrice());
-            List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
+            List<Image> fotos = LetGoServices.imageService.imageRepository.findByColumnAndValue("ilan", ilan);
             if (!fotos.isEmpty())
             {
                 System.out.println(fotos.getFirst().getImageurl());
@@ -159,7 +153,7 @@ public class IlanService
     {
         System.out.println("Detayli Gormek istediğiniz ilanın id'sini giriniz.");
         Long ilanId = scanner.nextLong(); scanner.nextLine();
-        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        List<FavouriteIlan> favouriteIlan = LetGoServices.favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
         Optional<Ilan> ilanOptional = ilanRepository.findById(ilanId);
         if (ilanOptional.isPresent())
         {
@@ -172,7 +166,7 @@ public class IlanService
             System.out.println("Aciklama: " + ilan.getDescription());
             System.out.println("Adres: " + ilan.getKonum());
             System.out.println("Fiyat " + ilan.getPrice());
-            List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
+            List<Image> fotos = LetGoServices.imageService.imageRepository.findByColumnAndValue("ilan", ilan);
             fotos.forEach(f -> System.out.println(f.getImageurl()));
 
             favouriteIlan.forEach(f ->
@@ -206,7 +200,7 @@ public class IlanService
                     favoriIlanCikarma(ilan);
                     break;
                 case 2:
-                    messageService.mesajAt(ilan);
+                    LetGoServices.messageService.mesajAt(ilan);
                     break;
                 case 0:
 
@@ -224,7 +218,7 @@ public class IlanService
         System.out.println("Favori ilanınızın id'sini giriniz.");
         Long ilanId = scanner.nextLong(); scanner.nextLine();
         Optional<Ilan> ilan = ilanRepository.findById(ilanId);
-        List<FavouriteIlan> favouriteIlanList = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+        List<FavouriteIlan> favouriteIlanList = LetGoServices.favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
 
         if (!ilan.isPresent())
         {
@@ -241,13 +235,13 @@ public class IlanService
 
         }
 
-        favouriteIlanService.favouriteIlanRepository.save(FavouriteIlan.builder().user(SessionContext.loggedUser).ilan(ilan.get()).createat(LocalDate.now()).status(Status.ACTIVE).build());
+        LetGoServices.favouriteIlanService.favouriteIlanRepository.save(FavouriteIlan.builder().user(SessionContext.loggedUser).ilan(ilan.get()).createat(LocalDate.now()).status(Status.ACTIVE).build());
     }
 
     public void favoriIlanCikarma(Ilan ilan)
     {
-        List<FavouriteIlan> favoriIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("ilan", ilan);
-        favouriteIlanService.favouriteIlanRepository.deleteById(favoriIlan.getFirst().getId());
+        List<FavouriteIlan> favoriIlan = LetGoServices.favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("ilan", ilan);
+        LetGoServices.favouriteIlanService.favouriteIlanRepository.deleteById(favoriIlan.getFirst().getId());
     }
 
 
