@@ -148,7 +148,7 @@ public class IlanService
                     messageService.mesajAt(ilan);
                     break;
                 case 0:
-                    scanner.nextLine();
+
                     return;
             }
         }

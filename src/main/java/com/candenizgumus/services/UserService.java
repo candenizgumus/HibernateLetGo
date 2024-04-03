@@ -33,7 +33,7 @@ public class UserService
         this.messageService = new MessageService();
     }
 
-    public Optional<User> login() //LOGINI DUZELT
+    public Optional<User> login()
     {
 
             System.out.println("Kullanıcı adı giriniz.");
@@ -141,7 +141,7 @@ public class UserService
             try
             {
                 System.out.println("seçim giriniz");
-                secim = scanner.nextInt();
+                secim = scanner.nextInt(); scanner.nextLine();
             } catch (InputMismatchException e)
             {
                 throw new RuntimeException("boş giremezsiniz");
@@ -164,7 +164,6 @@ public class UserService
                     messageService.mesajlarimiGoruntule();
                     break;
                 case 0:
-                    scanner.nextLine();
                     return;
 
             }
