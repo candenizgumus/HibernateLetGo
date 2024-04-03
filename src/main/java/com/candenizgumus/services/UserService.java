@@ -27,7 +27,7 @@ public class UserService
         this.ilanService = new IlanService();
     }
 
-    public Optional<User> login()
+    public Optional<User> login() //LOGINI DUZELT
     {
         System.out.println("Kullanıcı adı giriniz.");
         String kullaniciadi = scanner.nextLine();
@@ -118,9 +118,10 @@ public class UserService
         return matcher.matches();
     }
 
-    public void userMenu(User loggedUser){
+    public void userMenu(){
         while (true) {
             System.out.println("1- Ilan ver");
+            System.out.println("2- Ilanları listele");
 
             System.out.println("0- Üst Menü");
             Integer secim;
@@ -133,6 +134,9 @@ public class UserService
             switch (secim) {
                 case 1:
                     ilanService.ilanVer();
+                    break;
+                case 2:
+                    ilanService.ilanlariListele();
                     break;
 
                 case 0:

@@ -33,14 +33,14 @@ public class Main
             Integer secim;
             try {
                 System.out.println("seçim giriniz");
-                secim = scanner.nextInt();
+                secim = scanner.nextInt(); scanner.nextLine();
             }catch (InputMismatchException e){
                 throw new RuntimeException("boş giremezsiniz");
             }
             switch (secim) {
                 case 1:
                     userService.login();
-                    userService.userMenu(SessionContext.loggedUser);
+                    userService.userMenu();
                     break;
                 case 2:
                     userService.register();

@@ -2,6 +2,7 @@ package com.candenizgumus.services;
 
 import com.candenizgumus.entities.Category;
 import com.candenizgumus.entities.Ilan;
+import com.candenizgumus.entities.Image;
 import com.candenizgumus.entities.enums.Status;
 import com.candenizgumus.repositories.CategoryRepository;
 import com.candenizgumus.repositories.IlanRepository;
@@ -14,21 +15,25 @@ import java.util.Scanner;
 public class IlanService
 {
     IlanRepository ilanRepository;
-    CategoryRepository categoryRepository;
+    CategoryService categoryService;
+    ImageService imageService;
+    UserService userService;
     Scanner scanner = new Scanner(System.in);
 
     public IlanService()
     {
         this.ilanRepository = new IlanRepository();
-        this.categoryRepository = new CategoryRepository();
+        this.categoryService = new CategoryService();
+        this.imageService = new ImageService();
+        this.userService = new UserService();
     }
 
     public void ilanVer(){
         System.out.println("Kategori Seçiniz");
-        categoryRepository.getAllParentCategories().forEach(System.out::println);
+        categoryService.categoryRepository.getAllParentCategories().forEach(System.out::println);
         System.out.println("Bir parent kategory giriniz.");
         String secilenParentCategory = scanner.nextLine();
-        categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
+        categoryService.categoryRepository.getCategoriesByParentName(secilenParentCategory).forEach(System.out::println);
         System.out.println("Alt kategorinizi giriniz.");
         String altKategori = scanner.nextLine();
         System.out.println("Başlık giriniz.");
@@ -39,9 +44,34 @@ public class IlanService
         String konum = scanner.nextLine();
         System.out.println("Fiyat giriniz.");
         Double fiyat = scanner.nextDouble(); scanner.nextLine();
-        List<Category> category = categoryRepository.findByColumnAndValue("name", altKategori);
-        ilanRepository.save(Ilan.builder().user(SessionContext.loggedUser).category(category.getFirst()).title(baslik).description(description).konum(konum).price(fiyat).createat(LocalDate.now()).status(Status.ACTIVE).build());
 
 
+
+
+
+
+        List<Category> category = categoryService.categoryRepository.findByColumnAndValue("name", altKategori);
+        Ilan ilan = ilanRepository.save(Ilan.builder().user(SessionContext.loggedUser).category(category.getFirst()).title(baslik).description(description).konum(konum).price(fiyat).createat(LocalDate.now()).status(Status.ACTIVE).build());
+
+        List<String> fotoURLS = imageService.fotografAl0YazanaKadar();
+        fotoURLS.forEach(f -> imageService.imageRepository.save(Image.builder().createat(LocalDate.now()).status(Status.ACTIVE).ilan(ilan).imageurl(f).build()));
+
+    }
+
+
+    public void ilanlariListele(){
+        List<Ilan> butunIlanlar = ilanRepository.findAll();
+        butunIlanlar.forEach(ilan -> {
+            System.out.println("Ilan No: "+ ilan.getId());
+            System.out.println(ilan.getUser());
+            System.out.println(ilan.getCreateat());
+            System.out.println(ilan.getTitle());
+            System.out.println(ilan.getDescription());
+            System.out.println(ilan.getKonum());
+            System.out.println(ilan.getPrice());
+            List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
+            fotos.forEach(System.out::println);
+
+        });
     }
 }
