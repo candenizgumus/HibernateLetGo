@@ -17,7 +17,7 @@ public class IlanService
     IlanRepository ilanRepository;
     CategoryService categoryService;
     ImageService imageService;
-    UserService userService;
+
     Scanner scanner = new Scanner(System.in);
 
     public IlanService()
@@ -25,7 +25,7 @@ public class IlanService
         this.ilanRepository = new IlanRepository();
         this.categoryService = new CategoryService();
         this.imageService = new ImageService();
-        this.userService = new UserService();
+
     }
 
     public void ilanVer(){
@@ -62,16 +62,19 @@ public class IlanService
     public void ilanlariListele(){
         List<Ilan> butunIlanlar = ilanRepository.findAll();
         butunIlanlar.forEach(ilan -> {
+            System.out.println("************************************************************************************************************************************");
             System.out.println("Ilan No: "+ ilan.getId());
-            System.out.println(ilan.getUser());
-            System.out.println(ilan.getCreateat());
-            System.out.println(ilan.getTitle());
-            System.out.println(ilan.getDescription());
-            System.out.println(ilan.getKonum());
-            System.out.println(ilan.getPrice());
+            System.out.println("Username: " + ilan.getUser().getUsername());
+            System.out.println("Tarih: " + ilan.getCreateat());
+            System.out.println("Baslik: " + ilan.getTitle());
+            System.out.println("Aciklama: " + ilan.getDescription());
+            System.out.println("Adres: " + ilan.getKonum());
+            System.out.println("Fiyat " + ilan.getPrice());
             List<Image> fotos = imageService.imageRepository.findByColumnAndValue("ilan", ilan);
-            fotos.forEach(System.out::println);
+            fotos.forEach(f-> System.out.println(f.getImageurl()));
 
         });
+
+        System.out.println("************************************************************************************************************************************");
     }
 }

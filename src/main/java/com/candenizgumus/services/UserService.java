@@ -145,4 +145,10 @@ public class UserService
             }
         }
     }
+
+    public void favoriIlanSecme(){
+        System.out.println("Favori ilanınızın id'sini giriniz.");
+        String ilanId = scanner.nextLine();
+        ilanService.ilanRepository.findById()
+    }
 }
