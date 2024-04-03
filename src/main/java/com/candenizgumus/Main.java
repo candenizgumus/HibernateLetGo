@@ -1,13 +1,12 @@
 package com.candenizgumus;
 
-import com.candenizgumus.entities.Category;
+
 import com.candenizgumus.entities.User;
-import com.candenizgumus.repositories.CategoryRepository;
-import com.candenizgumus.repositories.UserRepository;
 import com.candenizgumus.services.UserService;
-import com.candenizgumus.utility.SessionContext;
+
 
 import java.util.InputMismatchException;
+
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -19,8 +18,6 @@ public class Main
     {
 
         menu();
-
-
 
     }
 
@@ -39,9 +36,13 @@ public class Main
             }
             switch (secim) {
                 case 1:
-                    userService.login();
-                    userService.userMenu();
-                    break;
+                    Optional<User> loggedUser = userService.login();
+                    if (loggedUser.isPresent())
+                    {
+                        userService.userMenu();
+                        break;
+                    }
+                   break;
                 case 2:
                     userService.register();
                     break;

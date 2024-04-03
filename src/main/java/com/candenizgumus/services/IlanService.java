@@ -5,8 +5,8 @@ import com.candenizgumus.entities.FavouriteIlan;
 import com.candenizgumus.entities.Ilan;
 import com.candenizgumus.entities.Image;
 import com.candenizgumus.entities.enums.Status;
-import com.candenizgumus.repositories.CategoryRepository;
 import com.candenizgumus.repositories.IlanRepository;
+import com.candenizgumus.repositories.MessageRepository;
 import com.candenizgumus.utility.SessionContext;
 
 import java.time.LocalDate;
@@ -20,6 +20,7 @@ public class IlanService
     CategoryService categoryService;
     ImageService imageService;
     FavouriteIlanService favouriteIlanService;
+    MessageService messageService;
 
     Scanner scanner = new Scanner(System.in);
 
@@ -29,6 +30,7 @@ public class IlanService
         this.categoryService = new CategoryService();
         this.imageService = new ImageService();
         this.favouriteIlanService = new FavouriteIlanService();
+        this.messageService = new MessageService();
 
     }
 
@@ -95,7 +97,7 @@ public class IlanService
     public void ilanlariListeleDetayli()
     {
         System.out.println("Detayli Gormek istediğiniz ilanın id'sini giriniz.");
-        Long ilanId = scanner.nextLong();
+        Long ilanId = scanner.nextLong(); scanner.nextLine();
         List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
         Optional<Ilan> ilanOptional = ilanRepository.findById(ilanId);
         if (ilanOptional.isPresent())
@@ -125,43 +127,60 @@ public class IlanService
         System.out.println("************************************************************************************************************************************");
 
 
-
     }
 
-    public void ilanIslemleri(Ilan ilan){
+    public void ilanIslemleri(Ilan ilan)
+    {
 
-        while(true)
+        while (true)
         {
             System.out.println("1- Ilanı Favoriden Çıkar");
             System.out.println("2- Mesaj at");
-            System.out.println("3- Ust Menu");
-            int secim = scanner.nextInt(); scanner.nextLine();
+            System.out.println("0- Ust Menu");
+            int secim = scanner.nextInt();
+            scanner.nextLine();
             switch (secim)
-            {   case 1:
-                favoriIlanCikarma(ilan);
-                break;
-                case 3:
+            {
+                case 1:
+                    favoriIlanCikarma(ilan);
+                    break;
+                case 2:
+                    messageService.mesajAt(ilan);
+                    break;
+                case 0:
+                    scanner.nextLine();
                     return;
             }
         }
 
     }
 
+
+
     public void favoriIlanSecme()
     {
 
         System.out.println("Favori ilanınızın id'sini giriniz.");
-        Long ilanId = scanner.nextLong();
-        Optional<Ilan> favoriIlan = ilanRepository.findById(ilanId);
-        List<FavouriteIlan> favouriteIlan = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
-        if (favoriIlan.isPresent() && !(favouriteIlan.getFirst().getIlan().equals(favoriIlan.get())))
+        Long ilanId = scanner.nextLong(); scanner.nextLine();
+        Optional<Ilan> ilan = ilanRepository.findById(ilanId);
+        List<FavouriteIlan> favouriteIlanList = favouriteIlanService.favouriteIlanRepository.findByColumnAndValue("user", SessionContext.loggedUser);
+
+        if (!ilan.isPresent())
         {
-            favouriteIlanService.favouriteIlanRepository.save(FavouriteIlan.builder().user(SessionContext.loggedUser).ilan(favoriIlan.get()).createat(LocalDate.now()).status(Status.ACTIVE).build());
-        } else
+            System.out.println("İlan mevcut mevcut değil");
+            return;
+        }
+        for (FavouriteIlan favouriteIlan : favouriteIlanList)
         {
-            System.out.println("Girilen no'da ilan yoktu veya Bu ilan zaten favorinizdedir.");
+            if (favouriteIlan.getIlan().equals(ilan.get()))
+            {
+                System.out.println("Bu ilan zaten favorinizde.");
+                return;
+            }
+
         }
 
+        favouriteIlanService.favouriteIlanRepository.save(FavouriteIlan.builder().user(SessionContext.loggedUser).ilan(ilan.get()).createat(LocalDate.now()).status(Status.ACTIVE).build());
     }
 
     public void favoriIlanCikarma(Ilan ilan)

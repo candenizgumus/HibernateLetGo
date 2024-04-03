@@ -22,6 +22,7 @@ public class UserService
     UserRepository userRepository;
     IlanService ilanService;
     FavouriteIlanService favouriteIlanService;
+    MessageService messageService;
     Scanner scanner = new Scanner(System.in);
 
     public UserService()
@@ -29,32 +30,36 @@ public class UserService
         this.userRepository = new UserRepository();
         this.ilanService = new IlanService();
         this.favouriteIlanService = new FavouriteIlanService();
+        this.messageService = new MessageService();
     }
 
     public Optional<User> login() //LOGINI DUZELT
     {
-        System.out.println("Kullanıcı adı giriniz.");
-        String kullaniciadi = scanner.nextLine();
-        System.out.println("Şifre Giriniz.");
-        String sifre = scanner.nextLine();
 
-        List<User> kullaniciAdiListesi = userRepository.findByColumnAndValue("username", kullaniciadi);
+            System.out.println("Kullanıcı adı giriniz.");
+            String kullaniciadi = scanner.nextLine();
+            System.out.println("Şifre Giriniz.");
+            String sifre = scanner.nextLine();
 
-        if (!kullaniciAdiListesi.isEmpty())
-        {
-            if (kullaniciAdiListesi.getFirst().getPassword().equals(sifre))
+            List<User> kullaniciAdiListesi = userRepository.findByColumnAndValue("username", kullaniciadi);
+
+            if (!kullaniciAdiListesi.isEmpty())
             {
-                SessionContext.loggedUser = (kullaniciAdiListesi.getFirst());
-                return Optional.ofNullable(kullaniciAdiListesi.getFirst());
-            } else
-            {
-                System.out.println("Kullanici adi veya sifre hatali.");
-                return Optional.empty();
+                if (kullaniciAdiListesi.getFirst().getPassword().equals(sifre))
+                {
+                    SessionContext.loggedUser = (kullaniciAdiListesi.getFirst());
+                    return Optional.ofNullable(kullaniciAdiListesi.getFirst());
+                } else
+                {
+                    System.out.println("Kullanici adi veya sifre hatali.");
+                    return Optional.empty();
+                }
+
             }
+            System.out.println("Kullanici adi veya sifre hatali.");
+            return Optional.empty();
 
-        }
-        System.out.println("Kullanici adi veya sifre hatali.");
-        return Optional.empty();
+
     }
 
 
@@ -130,7 +135,7 @@ public class UserService
             System.out.println("2- Ilanları Detaysiz Listele");
             System.out.println("3- Ilanları Detayli Listele");
             System.out.println("4- Favori İlan Seçme");
-
+            System.out.println("5- Mesajları Goruntule");
             System.out.println("0- Üst Menü");
             Integer secim;
             try
@@ -155,7 +160,11 @@ public class UserService
                 case 4:
                     ilanService.favoriIlanSecme();
                     break;
+                case 5:
+                    messageService.mesajlarimiGoruntule();
+                    break;
                 case 0:
+                    scanner.nextLine();
                     return;
 
             }
