@@ -186,8 +186,6 @@ public class UserService
     }
 
     public void searchByLocation(){
-
-
         System.out.println("Bir konum seciniz.");
         String konum = scanner.nextLine();
         LetGoServices.ilanService.ilanlariGosterDetaysizKonumaGore(konum);

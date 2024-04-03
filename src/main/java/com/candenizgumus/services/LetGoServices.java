@@ -1,7 +1,7 @@
 package com.candenizgumus.services;
 
 
-public class LetGoServices
+public abstract class LetGoServices
 {
     public static final CategoryService categoryService = new CategoryService();
     public static final CommentService commentService = new CommentService();
