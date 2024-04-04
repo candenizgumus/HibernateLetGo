@@ -23,7 +23,7 @@ public class CategoryRepository extends RepositoryManager<Category,Long>
 
     public List<String> getCategoriesByParentName(String parentName) {
         TypedQuery<String> query = getEntityManager().createQuery(
-                "SELECT DISTINCT(c.name) FROM Category c WHERE c.parentCategory =:parentName ", String.class);
+                "SELECT DISTINCT(c.name) FROM Category c WHERE LOWER(c.parentCategory) =LOWER(:parentName) ", String.class);
         query.setParameter("parentName", parentName);
 
         return query.getResultList();

@@ -24,6 +24,8 @@ public class Message
     User sender;
     @ManyToOne
     User receiver;
+    @ManyToOne
+    Ilan ilan;
     String text;
     @Temporal(TemporalType.DATE)
     LocalDate send_date;
