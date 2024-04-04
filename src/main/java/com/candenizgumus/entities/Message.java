@@ -6,8 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,8 +31,8 @@ public class Message
     @ManyToOne
     Ilan ilan;
     String text;
-    @Temporal(TemporalType.DATE)
-    LocalDate send_date;
+    @CreationTimestamp()
+    LocalDateTime send_date;
     @Temporal(TemporalType.DATE)
     LocalDate updateat;
     @Enumerated(EnumType.STRING)
